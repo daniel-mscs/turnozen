@@ -67,12 +67,13 @@ export default function ModalTurno({ emprego, userId, onClose, onSaved }) {
           <div className={styles.field}>
             <label className={styles.label}>Data</label>
             <input
-              ref={dataRef}
-              className={styles.input}
-              type="date"
-              value={data}
-              onChange={e => setData(e.target.value)}
-            />
+                ref={dataRef}
+                className={styles.input}
+                type="date"
+                value={data}
+                max={new Date().toISOString().split('T')[0]}
+                onChange={e => setData(e.target.value)}
+              />
           </div>
 
           <div className={styles.row}>

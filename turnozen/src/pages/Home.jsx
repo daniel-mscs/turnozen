@@ -9,6 +9,7 @@ export default function Home({ session }) {
   const [loading, setLoading] = useState(true)
   const [modalAberto, setModalAberto] = useState(false)
   const [empregoSelecionado, setEmpregoSelecionado] = useState(null)
+  const [toast, setToast] = useState('')
   useEffect(() => {
     fetchEmpregos()
   }, [])
@@ -31,6 +32,11 @@ export default function Home({ session }) {
   if (!confirm('Deletar esse emprego?')) return
   await supabase.from('empregos').delete().eq('id', id)
   fetchEmpregos()
+}
+
+  function showToast(msg) {
+  setToast(msg)
+  setTimeout(() => setToast(''), 3000)
 }
 
   return (
@@ -100,9 +106,11 @@ export default function Home({ session }) {
           emprego={empregoSelecionado}
           userId={session.user.id}
           onClose={() => { setEmpregoSelecionado(null) }}
-          onSaved={() => {}}
+          onSaved={() => showToast('Turno salvo!')}
         />
       )}
+
+      {toast && <div className={styles.toast}>{toast}</div>}
     </div>
   )
 }
