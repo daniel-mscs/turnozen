@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase'
 import ModalEmprego from '../components/ModalEmprego'
 import styles from './Home.module.css'
 import ModalTurno from '../components/ModalTurno'
+import Turnos from '../pages/Turnos'
 
 export default function Home({ session }) {
   const [empregos, setEmpregos] = useState([])
@@ -10,6 +11,7 @@ export default function Home({ session }) {
   const [modalAberto, setModalAberto] = useState(false)
   const [empregoSelecionado, setEmpregoSelecionado] = useState(null)
   const [toast, setToast] = useState('')
+  const [telaEmprego, setTelaEmprego] = useState(null)
   useEffect(() => {
     fetchEmpregos()
   }, [])
@@ -38,6 +40,13 @@ export default function Home({ session }) {
   setToast(msg)
   setTimeout(() => setToast(''), 3000)
 }
+
+if (telaEmprego) return (
+  <Turnos
+    emprego={telaEmprego}
+    onBack={() => setTelaEmprego(null)}
+  />
+)
 
   return (
     <div className={styles.container}>
@@ -72,7 +81,13 @@ export default function Home({ session }) {
             {empregos.map(emp => (
               <div key={emp.id} className={styles.empregoCard}>
                 <div className={styles.empregoCor} style={{ background: emp.cor }} />
-                <span className={styles.empregoNome}>{emp.nome}</span>
+                <span
+                    className={styles.empregoNome}
+                    onClick={() => setTelaEmprego(emp)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {emp.nome}
+                  </span>
                 <div className={styles.empregoActions}>
                   <button
                     className={styles.btnTurno}

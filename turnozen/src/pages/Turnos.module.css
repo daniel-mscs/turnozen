@@ -1,0 +1,151 @@
+.container {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #e5e5e5;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  background: #111;
+  border-bottom: 1px solid #222;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btnBack {
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+.btnBack:hover { color: #fff; }
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cor {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.headerNome {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.mesInput {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.mesInput:focus { border-color: #8B5CF6; }
+
+.total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.totalLabel {
+  font-size: 10px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.totalHoras {
+  font-size: 20px;
+  font-weight: 600;
+  color: #8B5CF6;
+}
+
+.empty {
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+  margin-top: 48px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cardData {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.cardHoras {
+  font-size: 13px;
+  color: #888;
+  flex: 1;
+}
+
+.cardDuracao {
+  font-size: 13px;
+  color: #8B5CF6;
+  font-weight: 500;
+  min-width: 40px;
+  text-align: right;
+}
+
+.btnDeletar {
+  background: transparent;
+  border: none;
+  color: #333;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s;
+}
+
+.btnDeletar:hover { color: #e53935; }
