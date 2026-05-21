@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import ModalEmprego from '../components/ModalEmprego'
 import styles from './Home.module.css'
+import ModalTurno from '../components/ModalTurno'
 
 export default function Home({ session }) {
   const [empregos, setEmpregos] = useState([])
   const [loading, setLoading] = useState(true)
   const [modalAberto, setModalAberto] = useState(false)
+  const [empregoSelecionado, setEmpregoSelecionado] = useState(null)
   useEffect(() => {
     fetchEmpregos()
   }, [])
@@ -65,12 +67,20 @@ export default function Home({ session }) {
               <div key={emp.id} className={styles.empregoCard}>
                 <div className={styles.empregoCor} style={{ background: emp.cor }} />
                 <span className={styles.empregoNome}>{emp.nome}</span>
-                <button
-                  className={styles.btnDeletar}
-                  onClick={() => handleDeletar(emp.id)}
-                >
-                  <i className="ti ti-trash" />
-                </button>
+                <div className={styles.empregoActions}>
+                  <button
+                    className={styles.btnTurno}
+                    onClick={() => setEmpregoSelecionado(emp)}
+                  >
+                    Adicionar turno
+                  </button>
+                  <button
+                    className={styles.btnDeletar}
+                    onClick={() => handleDeletar(emp.id)}
+                  >
+                    <i className="ti ti-trash" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -82,6 +92,15 @@ export default function Home({ session }) {
           userId={session.user.id}
           onClose={() => setModalAberto(false)}
           onSaved={fetchEmpregos}
+        />
+      )}
+
+      {empregoSelecionado && (
+        <ModalTurno
+          emprego={empregoSelecionado}
+          userId={session.user.id}
+          onClose={() => { setEmpregoSelecionado(null) }}
+          onSaved={() => {}}
         />
       )}
     </div>
