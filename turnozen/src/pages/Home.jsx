@@ -25,6 +25,12 @@ export default function Home({ session }) {
     await supabase.auth.signOut()
   }
 
+  async function handleDeletar(id) {
+  if (!confirm('Deletar esse emprego?')) return
+  await supabase.from('empregos').delete().eq('id', id)
+  fetchEmpregos()
+}
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -59,6 +65,12 @@ export default function Home({ session }) {
               <div key={emp.id} className={styles.empregoCard}>
                 <div className={styles.empregoCor} style={{ background: emp.cor }} />
                 <span className={styles.empregoNome}>{emp.nome}</span>
+                <button
+                  className={styles.btnDeletar}
+                  onClick={() => handleDeletar(emp.id)}
+                >
+                  <i className="ti ti-trash" />
+                </button>
               </div>
             ))}
           </div>

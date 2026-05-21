@@ -114,3 +114,16 @@
   font-size: 15px;
   color: #e5e5e5;
 }
+
+.btnDeletar {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #444;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.btnDeletar:hover { color: #e53935; }
