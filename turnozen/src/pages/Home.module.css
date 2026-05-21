@@ -1,0 +1,116 @@
+.container {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #e5e5e5;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  background: #111;
+  border-bottom: 1px solid #222;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.logoAccent { color: #8B5CF6; }
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #8B5CF6;
+}
+
+.btnLogout {
+  background: transparent;
+  border: 1px solid #333;
+  color: #666;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btnLogout:hover { border-color: #e53935; color: #e53935; }
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.btnAdd {
+  background: #8B5CF6;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btnAdd:hover { opacity: 0.85; }
+
+.empty {
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+  margin-top: 48px;
+}
+
+.empregosList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empregoCard {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.empregoCor {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.empregoNome {
+  font-size: 15px;
+  color: #e5e5e5;
+}

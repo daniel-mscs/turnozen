@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import Login from './pages/Login'
+import Home from './pages/Home'
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -29,9 +30,5 @@ export default function App() {
 
   if (!session) return <Login />
 
-  return (
-    <div style={{ color: '#fff', background: '#0a0a0a', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace' }}>
-      Olá, {session.user.email} 👋
-    </div>
-  )
+return <Home session={session} />
 }
