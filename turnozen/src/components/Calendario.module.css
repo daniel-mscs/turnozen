@@ -1,0 +1,98 @@
+.container {
+  width: 100%;
+}
+
+.navMes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.btnNav {
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  color: #888;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btnNav:hover { border-color: #8B5CF6; color: #8B5CF6; }
+
+.semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.diaSemana {
+  text-align: center;
+  font-size: 11px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.diaVazio { aspect-ratio: 1; }
+
+.dia {
+  aspect-ratio: 1;
+  background: #111;
+  border: 1px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: border-color 0.15s;
+}
+
+.dia:hover { border-color: #333; }
+
+.hoje {
+  border-color: #8B5CF6 !important;
+}
+
+.comTurno { background: #131313; }
+
+.diaNum {
+  font-size: 12px;
+  color: #888;
+  line-height: 1;
+}
+
+.hoje .diaNum { color: #8B5CF6; font-weight: 600; }
+
+.barras {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.barra {
+  height: 3px;
+  border-radius: 2px;
+  width: 100%;
+}
