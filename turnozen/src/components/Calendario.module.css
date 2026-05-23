@@ -64,7 +64,8 @@
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 4px;
   transition: border-color 0.15s;
 }
 
@@ -86,13 +87,21 @@
 
 .barras {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 2px;
-  flex: 1;
 }
 
 .barra {
-  height: 3px;
-  border-radius: 2px;
-  width: 100%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.livre {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1;
 }

@@ -35,7 +35,29 @@ export default function Calendario({ empregos, userId, onDiaClick, refresh }) {
 
   function turnosDoDia(dia) {
     const dataStr = `${mes.ano}-${String(mes.mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`
-    return turnos.filter(t => t.data === dataStr)
+    return turnos.filter(t => t.data === dataStr).sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio))
+  }
+
+  function horasLivres(dia) {
+    const turnosDia = turnosDoDia(dia)
+    const turnosProximo = turnosDoDia(dia + 1)
+
+    if (turnosDia.length === 0 || turnosProximo.length === 0) return null
+
+    const ultimoFim = turnosDia[turnosDia.length - 1].hora_fim.slice(0, 5)
+    const proximoInicio = turnosProximo[0].hora_inicio.slice(0, 5)
+
+    const [h1, m1] = ultimoFim.split(':').map(Number)
+    const [h2, m2] = proximoInicio.split(':').map(Number)
+
+    const minsFim = h1 * 60 + m1
+    const minsInicio = h2 * 60 + m2 + 24 * 60 // dia seguinte
+
+    const diff = minsInicio - minsFim
+    const horas = Math.floor(diff / 60)
+    const mins = diff % 60
+
+    return { horas, mins, critico: diff < 11 * 60 }
   }
 
   function mesAnterior() {
@@ -85,6 +107,8 @@ export default function Calendario({ empregos, userId, onDiaClick, refresh }) {
           const turnosDia = turnosDoDia(dia)
           const isHoje = dataStr === hojeStr
 
+          const livre = horasLivres(dia)
+
           return (
             <div
               key={dia}
@@ -102,6 +126,15 @@ export default function Calendario({ empregos, userId, onDiaClick, refresh }) {
                   />
                 ))}
               </div>
+              {livre && (
+                <span
+                  className={styles.livre}
+                  style={{ color: livre.critico ? '#e53935' : '#10B981' }}
+                  title={`${livre.horas}h${livre.mins > 0 ? `${livre.mins}m` : ''} livres até próximo turno`}
+                >
+                  {livre.horas}h
+                </span>
+              )}
             </div>
           )
         })}
