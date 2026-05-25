@@ -2,6 +2,7 @@
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
+  overflow-x: hidden;
 }
 
 /* ── NAV MÊS ── */
@@ -32,11 +33,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
   line-height: 1;
 }
 
-.btnNav:hover { color: #8B5CF6; background: rgba(139,92,246,0.08); }
+.btnNav:hover {
+  color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.08);
+}
 
 /* ── DIAS DA SEMANA ── */
 .semana {
@@ -59,10 +65,12 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
+  gap: 2px;
 }
 
-.diaVazio { aspect-ratio: 1; }
+.diaVazio {
+  aspect-ratio: 1;
+}
 
 /* ── DIA ── */
 .dia {
@@ -76,7 +84,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .dia:hover {
@@ -86,7 +96,7 @@
 
 .hoje {
   background: rgba(139, 92, 246, 0.08) !important;
-  border-color: #8B5CF6 !important;
+  border-color: #8b5cf6 !important;
 }
 
 .comTurno {
@@ -104,7 +114,7 @@
 }
 
 .hoje .diaNum {
-  color: #8B5CF6;
+  color: #8b5cf6;
   font-weight: 600;
 }
 
@@ -141,7 +151,7 @@
 .popupOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,7 +193,9 @@
   transition: color 0.15s;
 }
 
-.popupClose:hover { color: #fff; }
+.popupClose:hover {
+  color: #fff;
+}
 
 .popupTurnos {
   display: flex;
@@ -224,7 +236,7 @@
 
 .popupDuracao {
   font-size: 12px;
-  color: #8B5CF6;
+  color: #8b5cf6;
   font-weight: 600;
 }
 
@@ -259,19 +271,51 @@
   transition: color 0.15s;
 }
 
-.popupEditBtn:hover { color: #8B5CF6; }
+.popupEditBtn:hover {
+  color: #8b5cf6;
+}
 
 .popupAddBtn {
   background: transparent;
   border: 1px solid #2a2a2a;
-  color: #8B5CF6;
+  color: #8b5cf6;
   padding: 8px 14px;
   border-radius: 8px;
   font-size: 12px;
   cursor: pointer;
   font-family: inherit;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
   text-align: left;
 }
 
-.popupAddBtn:hover { border-color: #8B5CF6; background: rgba(139,92,246,0.08); }
+.popupAddBtn:hover {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.08);
+}
+
+@media (max-width: 480px) {
+  .dia {
+    padding: 4px 2px;
+    border-radius: 7px;
+  }
+
+  .diaNum {
+    font-size: 10px;
+    padding-left: 1px;
+  }
+
+  .barras {
+    padding: 8px 0;
+    width: 90%;
+  }
+
+  .barra {
+    height: 4px;
+  }
+
+  .livre {
+    font-size: 7px;
+  }
+}

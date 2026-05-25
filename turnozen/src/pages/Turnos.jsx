@@ -1,65 +1,65 @@
-import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
-import styles from './Turnos.module.css'
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import styles from "./Turnos.module.css";
 
 export default function Turnos({ emprego, onBack }) {
-  const [turnos, setTurnos] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [turnos, setTurnos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [mes, setMes] = useState(() => {
-    const hoje = new Date()
-    return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`
-  })
+    const hoje = new Date();
+    return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}`;
+  });
 
   useEffect(() => {
-    fetchTurnos()
-  }, [mes])
+    fetchTurnos();
+  }, [mes]);
 
   async function fetchTurnos() {
-    setLoading(true)
-    const inicio = `${mes}-01`
-    const fim = `${mes}-31`
+    setLoading(true);
+    const inicio = `${mes}-01`;
+    const fim = `${mes}-31`;
 
     const { data, error } = await supabase
-      .from('turnos')
-      .select('*')
-      .eq('emprego_id', emprego.id)
-      .gte('data', inicio)
-      .lte('data', fim)
-      .order('data', { ascending: true })
+      .from("turnos")
+      .select("*")
+      .eq("emprego_id", emprego.id)
+      .gte("data", inicio)
+      .lte("data", fim)
+      .order("data", { ascending: true });
 
-    if (!error) setTurnos(data)
-    setLoading(false)
+    if (!error) setTurnos(data);
+    setLoading(false);
   }
 
   async function handleDeletar(id) {
-    if (!confirm('Deletar esse turno?')) return
-    await supabase.from('turnos').delete().eq('id', id)
-    fetchTurnos()
+    if (!confirm("Deletar esse turno?")) return;
+    await supabase.from("turnos").delete().eq("id", id);
+    fetchTurnos();
   }
 
   function calcHoras(inicio, fim) {
-    const [h1, m1] = inicio.split(':').map(Number)
-    const [h2, m2] = fim.split(':').map(Number)
-    let mins = (h2 * 60 + m2) - (h1 * 60 + m1)
-    if (mins < 0) mins += 24 * 60
-    return `${Math.floor(mins / 60)}h${mins % 60 > 0 ? `${mins % 60}m` : ''}`
+    const [h1, m1] = inicio.split(":").map(Number);
+    const [h2, m2] = fim.split(":").map(Number);
+    let mins = h2 * 60 + m2 - (h1 * 60 + m1);
+    if (mins < 0) mins += 24 * 60;
+    return `${Math.floor(mins / 60)}h${mins % 60 > 0 ? `${mins % 60}m` : ""}`;
   }
 
   function totalHoras() {
-    let total = 0
-    turnos.forEach(t => {
-      const [h1, m1] = t.hora_inicio.split(':').map(Number)
-      const [h2, m2] = t.hora_fim.split(':').map(Number)
-      let mins = (h2 * 60 + m2) - (h1 * 60 + m1)
-      if (mins < 0) mins += 24 * 60
-      total += mins
-    })
-    return `${Math.floor(total / 60)}h${total % 60 > 0 ? `${total % 60}m` : ''}`
+    let total = 0;
+    turnos.forEach((t) => {
+      const [h1, m1] = t.hora_inicio.split(":").map(Number);
+      const [h2, m2] = t.hora_fim.split(":").map(Number);
+      let mins = h2 * 60 + m2 - (h1 * 60 + m1);
+      if (mins < 0) mins += 24 * 60;
+      total += mins;
+    });
+    return `${Math.floor(total / 60)}h${total % 60 > 0 ? `${total % 60}m` : ""}`;
   }
 
   function formatData(data) {
-    const [ano, mes, dia] = data.split('-')
-    return `${dia}/${mes}/${ano}`
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
   }
 
   return (
@@ -80,7 +80,7 @@ export default function Turnos({ emprego, onBack }) {
             className={styles.mesInput}
             type="month"
             value={mes}
-            onChange={e => setMes(e.target.value)}
+            onChange={(e) => setMes(e.target.value)}
           />
           {turnos.length > 0 && (
             <div className={styles.total}>
@@ -96,7 +96,7 @@ export default function Turnos({ emprego, onBack }) {
           <p className={styles.empty}>Nenhum turno nesse mês.</p>
         ) : (
           <div className={styles.lista}>
-            {turnos.map(t => (
+            {turnos.map((t) => (
               <div key={t.id} className={styles.card}>
                 <div className={styles.cardData}>{formatData(t.data)}</div>
                 <div className={styles.cardHoras}>
@@ -117,5 +117,5 @@ export default function Turnos({ emprego, onBack }) {
         )}
       </main>
     </div>
-  )
+  );
 }

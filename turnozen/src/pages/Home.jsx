@@ -1,83 +1,79 @@
-import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
-import ModalEmprego from '../components/ModalEmprego'
-import ModalTurno from '../components/ModalTurno'
-import Calendario from '../components/Calendario'
-import Turnos from '../pages/Turnos'
-import BotaoPDF from '../components/BotaoPDF'
-import styles from './Home.module.css'
-import Ajuda from '../pages/Ajuda'
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import ModalEmprego from "../components/ModalEmprego";
+import ModalTurno from "../components/ModalTurno";
+import Calendario from "../components/Calendario";
+import Turnos from "../pages/Turnos";
+import BotaoPDF from "../components/BotaoPDF";
+import styles from "./Home.module.css";
+import Ajuda from "../pages/Ajuda";
 
 export default function Home({ session }) {
-  const [empregos, setEmpregos] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [modalAberto, setModalAberto] = useState(false)
-  const [empregoSelecionado, setEmpregoSelecionado] = useState(null)
-  const [telaEmprego, setTelaEmprego] = useState(null)
-  const [toast, setToast] = useState('')
-  const [sidebarAberta, setSidebarAberta] = useState(true)
-  const [refreshCalendario, setRefreshCalendario] = useState(0)
-  const [turnoEditando, setTurnoEditando] = useState(null)
-  const [dataPreSelecionada, setDataPreSelecionada] = useState('')
-  const [selecionandoEmprego, setSelecionandoEmprego] = useState(false)
-  const [turnosPDF, setTurnosPDF] = useState([])
-  const [telaAjuda, setTelaAjuda] = useState(false)
+  const [empregos, setEmpregos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [empregoSelecionado, setEmpregoSelecionado] = useState(null);
+  const [telaEmprego, setTelaEmprego] = useState(null);
+  const [toast, setToast] = useState("");
+  const [sidebarAberta, setSidebarAberta] = useState(true);
+  const [refreshCalendario, setRefreshCalendario] = useState(0);
+  const [turnoEditando, setTurnoEditando] = useState(null);
+  const [dataPreSelecionada, setDataPreSelecionada] = useState("");
+  const [selecionandoEmprego, setSelecionandoEmprego] = useState(false);
+  const [turnosPDF, setTurnosPDF] = useState([]);
+  const [telaAjuda, setTelaAjuda] = useState(false);
 
   useEffect(() => {
-    fetchEmpregos()
-  }, [])
+    fetchEmpregos();
+  }, []);
 
   useEffect(() => {
     if (!loading && empregos.length === 0) {
-      setModalAberto(true)
+      setModalAberto(true);
     }
-  }, [loading, empregos])
+  }, [loading, empregos]);
 
   async function fetchEmpregos() {
     const { data, error } = await supabase
-      .from('empregos')
-      .select('*')
-      .order('created_at', { ascending: true })
+      .from("empregos")
+      .select("*")
+      .order("created_at", { ascending: true });
 
-    if (!error) setEmpregos(data)
-    setLoading(false)
+    if (!error) setEmpregos(data);
+    setLoading(false);
   }
 
   async function handleLogout() {
-    await supabase.auth.signOut()
+    await supabase.auth.signOut();
   }
 
   async function handleDeletar(id) {
-    if (!confirm('Deletar esse emprego?')) return
-    await supabase.from('empregos').delete().eq('id', id)
-    fetchEmpregos()
+    if (!confirm("Deletar esse emprego?")) return;
+    await supabase.from("empregos").delete().eq("id", id);
+    fetchEmpregos();
   }
 
   function showToast(msg) {
-    setToast(msg)
-    setTimeout(() => setToast(''), 3000)
+    setToast(msg);
+    setTimeout(() => setToast(""), 3000);
   }
 
-  if (telaAjuda) return <Ajuda onBack={() => setTelaAjuda(false)} />
+  if (telaAjuda) return <Ajuda onBack={() => setTelaAjuda(false)} />;
 
-  if (telaEmprego) return (
-    <Turnos
-      emprego={telaEmprego}
-      onBack={() => setTelaEmprego(null)}
-    />
-  )
+  if (telaEmprego)
+    return <Turnos emprego={telaEmprego} onBack={() => setTelaEmprego(null)} />;
 
   async function fetchTurnosMes(mes, ano) {
-  const inicio = `${ano}-${String(mes + 1).padStart(2, '0')}-01`
-  const fim = `${ano}-${String(mes + 1).padStart(2, '0')}-31`
-  const { data } = await supabase
-    .from('turnos')
-    .select('*')
-    .eq('user_id', session.user.id)
-    .gte('data', inicio)
-    .lte('data', fim)
-  setTurnosPDF(data || [])
-}
+    const inicio = `${ano}-${String(mes + 1).padStart(2, "0")}-01`;
+    const fim = `${ano}-${String(mes + 1).padStart(2, "0")}-31`;
+    const { data } = await supabase
+      .from("turnos")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .gte("data", inicio)
+      .lte("data", fim);
+    setTurnosPDF(data || []);
+  }
 
   return (
     <div className={styles.container}>
@@ -85,8 +81,8 @@ export default function Home({ session }) {
         <div className={styles.headerLeft}>
           <button
             className={styles.btnToggle}
-            onClick={() => setSidebarAberta(s => !s)}
-            title={sidebarAberta ? 'Recolher painel' : 'Expandir painel'}
+            onClick={() => setSidebarAberta((s) => !s)}
+            title={sidebarAberta ? "Recolher painel" : "Expandir painel"}
           >
             <i className="ti ti-layout-sidebar" />
           </button>
@@ -95,7 +91,10 @@ export default function Home({ session }) {
           </div>
         </div>
         <div className={styles.headerRight}>
-          <button className={styles.btnAjuda} onClick={() => setTelaAjuda(true)}>
+          <button
+            className={styles.btnAjuda}
+            onClick={() => setTelaAjuda(true)}
+          >
             <i className="ti ti-help-circle" />
           </button>
           <img
@@ -109,13 +108,21 @@ export default function Home({ session }) {
         </div>
       </header>
 
-      <main className={`${styles.main} ${!sidebarAberta ? styles.mainFull : ''}`}>
-
+      <main
+        className={`${styles.main} ${!sidebarAberta ? styles.mainFull : ""}`}
+      >
         {/* ── SIDEBAR EMPREGOS ── */}
-        <div className={`${styles.sidebar} ${!sidebarAberta ? styles.sidebarHidden : ''}`}>
+        <div
+          className={`${styles.sidebar} ${!sidebarAberta ? styles.sidebarHidden : ""}`}
+        >
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Empregos</h2>
-            <button className={styles.btnAdd} onClick={() => setModalAberto(true)}>Novo emprego</button>
+            <button
+              className={styles.btnAdd}
+              onClick={() => setModalAberto(true)}
+            >
+              Novo emprego
+            </button>
           </div>
 
           {loading ? (
@@ -124,9 +131,12 @@ export default function Home({ session }) {
             <p className={styles.empty}>Nenhum emprego ainda.</p>
           ) : (
             <div className={styles.empregosList}>
-              {empregos.map(emp => (
+              {empregos.map((emp) => (
                 <div key={emp.id} className={styles.empregoCard}>
-                  <div className={styles.empregoCor} style={{ background: emp.cor }} />
+                  <div
+                    className={styles.empregoCor}
+                    style={{ background: emp.cor }}
+                  />
                   <span
                     className={styles.empregoNome}
                     onClick={() => setTelaEmprego(emp)}
@@ -155,7 +165,13 @@ export default function Home({ session }) {
 
         {/* ── CALENDÁRIO ── */}
         <div className={styles.calendarioWrap}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: 12,
+            }}
+          >
             <BotaoPDF
               empregos={empregos}
               mes={new Date().getMonth()}
@@ -169,8 +185,8 @@ export default function Home({ session }) {
               userId={session.user.id}
               onDiaClick={(dataStr, turnosDia) => {
                 if (turnosDia.length === 0 && empregos.length > 0) {
-                  setDataPreSelecionada(dataStr)
-                  setSelecionandoEmprego(true)
+                  setDataPreSelecionada(dataStr);
+                  setSelecionandoEmprego(true);
                 }
               }}
               refresh={refreshCalendario}
@@ -178,7 +194,6 @@ export default function Home({ session }) {
             />
           </div>
         </div>
-
       </main>
 
       {modalAberto && (
@@ -194,44 +209,100 @@ export default function Home({ session }) {
           emprego={empregoSelecionado}
           userId={session.user.id}
           dataInicial={dataPreSelecionada}
-          onClose={() => { setEmpregoSelecionado(null); setDataPreSelecionada('') }}
+          onClose={() => {
+            setEmpregoSelecionado(null);
+            setDataPreSelecionada("");
+          }}
           onSaved={(data) => {
-            const hoje = new Date().toISOString().split('T')[0]
-            if (data >= hoje) showToast('Turno salvo!')
-            fetchEmpregos()
-            setRefreshCalendario(r => r + 1)
+            const hoje = new Date().toISOString().split("T")[0];
+            if (data >= hoje) showToast("Turno salvo!");
+            fetchEmpregos();
+            setRefreshCalendario((r) => r + 1);
           }}
         />
       )}
 
       {turnoEditando && (
         <ModalTurno
-          emprego={empregos.find(e => e.id === turnoEditando.emprego_id)}
+          emprego={empregos.find((e) => e.id === turnoEditando.emprego_id)}
           userId={session.user.id}
           turnoExistente={turnoEditando}
           onClose={() => setTurnoEditando(null)}
           onSaved={(data) => {
-            const hoje = new Date().toISOString().split('T')[0]
-            if (data >= hoje) showToast('Turno atualizado!')
-            setTurnoEditando(null)
-            fetchEmpregos()
-            setRefreshCalendario(r => r + 1)
+            const hoje = new Date().toISOString().split("T")[0];
+            if (data >= hoje) showToast("Turno atualizado!");
+            setTurnoEditando(null);
+            fetchEmpregos();
+            setRefreshCalendario((r) => r + 1);
           }}
         />
       )}
 
       {selecionandoEmprego && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200 }}
-          onClick={() => setSelecionandoEmprego(false)}>
-          <div style={{ background: '#111', border: '1px solid #2a2a2a', borderRadius: 16, padding: '24px', minWidth: 280, display: 'flex', flexDirection: 'column', gap: 12 }}
-            onClick={e => e.stopPropagation()}>
-            <p style={{ fontSize: 13, color: '#888', textTransform: 'uppercase', letterSpacing: 1 }}>Qual emprego?</p>
-            {empregos.map(emp => (
-              <button key={emp.id}
-                style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#161616', border: '1px solid #222', borderRadius: 10, padding: '12px 16px', cursor: 'pointer', color: '#fff', fontSize: 14, fontFamily: 'inherit' }}
-                onClick={() => { setEmpregoSelecionado(emp); setSelecionandoEmprego(false) }}
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 200,
+          }}
+          onClick={() => setSelecionandoEmprego(false)}
+        >
+          <div
+            style={{
+              background: "#111",
+              border: "1px solid #2a2a2a",
+              borderRadius: 16,
+              padding: "24px",
+              minWidth: 280,
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p
+              style={{
+                fontSize: 13,
+                color: "#888",
+                textTransform: "uppercase",
+                letterSpacing: 1,
+              }}
+            >
+              Qual emprego?
+            </p>
+            {empregos.map((emp) => (
+              <button
+                key={emp.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  background: "#161616",
+                  border: "1px solid #222",
+                  borderRadius: 10,
+                  padding: "12px 16px",
+                  cursor: "pointer",
+                  color: "#fff",
+                  fontSize: 14,
+                  fontFamily: "inherit",
+                }}
+                onClick={() => {
+                  setEmpregoSelecionado(emp);
+                  setSelecionandoEmprego(false);
+                }}
               >
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: emp.cor }} />
+                <div
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: emp.cor,
+                  }}
+                />
                 {emp.nome}
               </button>
             ))}
@@ -241,5 +312,5 @@ export default function Home({ session }) {
 
       {toast && <div className={styles.toast}>{toast}</div>}
     </div>
-  )
+  );
 }

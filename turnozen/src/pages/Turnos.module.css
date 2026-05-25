@@ -2,7 +2,7 @@
   min-height: 100vh;
   background: #0a0a0a;
   color: #e5e5e5;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .header {
@@ -27,7 +27,9 @@
   transition: color 0.15s;
 }
 
-.btnBack:hover { color: #fff; }
+.btnBack:hover {
+  color: #fff;
+}
 
 .headerInfo {
   display: flex;
@@ -72,7 +74,9 @@
   transition: border-color 0.15s;
 }
 
-.mesInput:focus { border-color: #8B5CF6; }
+.mesInput:focus {
+  border-color: #8b5cf6;
+}
 
 .total {
   display: flex;
@@ -91,7 +95,7 @@
 .totalHoras {
   font-size: 20px;
   font-weight: 600;
-  color: #8B5CF6;
+  color: #8b5cf6;
 }
 
 .empty {
@@ -132,7 +136,7 @@
 
 .cardDuracao {
   font-size: 13px;
-  color: #8B5CF6;
+  color: #8b5cf6;
   font-weight: 500;
   min-width: 40px;
   text-align: right;
@@ -148,4 +152,6 @@
   transition: color 0.15s;
 }
 
-.btnDeletar:hover { color: #e53935; }
+.btnDeletar:hover {
+  color: #e53935;
+}

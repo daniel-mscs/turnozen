@@ -27,7 +27,9 @@
   margin-bottom: 4px;
 }
 
-.logoAccent { color: #8B5CF6; }
+.logoAccent {
+  color: #8b5cf6;
+}
 
 .sub {
   font-size: 13px;
@@ -53,4 +55,6 @@
   transition: opacity 0.2s;
 }
 
-.btnGoogle:hover { opacity: 0.9; }
+.btnGoogle:hover {
+  opacity: 0.9;
+}
