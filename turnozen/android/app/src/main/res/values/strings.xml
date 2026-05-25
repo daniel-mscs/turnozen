@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TurnoZen</string>
+    <string name="title_activity_main">TurnoZen</string>
+    <string name="package_name">com.danielmscs.turnozen</string>
+    <string name="custom_url_scheme">com.danielmscs.turnozen</string>
+</resources>
