@@ -4,6 +4,7 @@ import ModalEmprego from '../components/ModalEmprego'
 import ModalTurno from '../components/ModalTurno'
 import Calendario from '../components/Calendario'
 import Turnos from '../pages/Turnos'
+import BotaoPDF from '../components/BotaoPDF'
 import styles from './Home.module.css'
 
 export default function Home({ session }) {
@@ -18,16 +19,18 @@ export default function Home({ session }) {
   const [turnoEditando, setTurnoEditando] = useState(null)
   const [dataPreSelecionada, setDataPreSelecionada] = useState('')
   const [selecionandoEmprego, setSelecionandoEmprego] = useState(false)
+  const [turnosPDF, setTurnosPDF] = useState([])
 
   useEffect(() => {
-  fetchEmpregos()
-}, [])
+    fetchEmpregos()
+  }, [])
 
-useEffect(() => {
-  if (!loading && empregos.length === 0) {
-    setModalAberto(true)
-  }
-}, [loading, empregos])
+  useEffect(() => {
+    if (!loading && empregos.length === 0) {
+      setModalAberto(true)
+    }
+  }, [loading, empregos])
+
   async function fetchEmpregos() {
     const { data, error } = await supabase
       .from('empregos')
@@ -59,6 +62,18 @@ useEffect(() => {
       onBack={() => setTelaEmprego(null)}
     />
   )
+
+  async function fetchTurnosMes(mes, ano) {
+  const inicio = `${ano}-${String(mes + 1).padStart(2, '0')}-01`
+  const fim = `${ano}-${String(mes + 1).padStart(2, '0')}-31`
+  const { data } = await supabase
+    .from('turnos')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .gte('data', inicio)
+    .lte('data', fim)
+  setTurnosPDF(data || [])
+}
 
   return (
     <div className={styles.container}>
@@ -133,18 +148,28 @@ useEffect(() => {
 
         {/* ── CALENDÁRIO ── */}
         <div className={styles.calendarioWrap}>
-          <Calendario
-            empregos={empregos}
-            userId={session.user.id}
-            onDiaClick={(dataStr, turnosDia) => {
-              if (turnosDia.length === 0 && empregos.length > 0) {
-                setDataPreSelecionada(dataStr)
-                setSelecionandoEmprego(true)
-              }
-            }}
-            refresh={refreshCalendario}
-            onEditarTurno={(turno) => setTurnoEditando(turno)}
-          />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+            <BotaoPDF
+              empregos={empregos}
+              mes={new Date().getMonth()}
+              ano={new Date().getFullYear()}
+              userId={session.user.id}
+            />
+          </div>
+          <div id="calendario-pdf">
+            <Calendario
+              empregos={empregos}
+              userId={session.user.id}
+              onDiaClick={(dataStr, turnosDia) => {
+                if (turnosDia.length === 0 && empregos.length > 0) {
+                  setDataPreSelecionada(dataStr)
+                  setSelecionandoEmprego(true)
+                }
+              }}
+              refresh={refreshCalendario}
+              onEditarTurno={(turno) => setTurnoEditando(turno)}
+            />
+          </div>
         </div>
 
       </main>
@@ -164,15 +189,14 @@ useEffect(() => {
           dataInicial={dataPreSelecionada}
           onClose={() => { setEmpregoSelecionado(null); setDataPreSelecionada('') }}
           onSaved={(data) => {
-          const hoje = new Date().toISOString().split('T')[0]
-          if (data >= hoje) showToast('Turno salvo!')
-          fetchEmpregos()
-          setRefreshCalendario(r => r + 1)
-        }}
+            const hoje = new Date().toISOString().split('T')[0]
+            if (data >= hoje) showToast('Turno salvo!')
+            fetchEmpregos()
+            setRefreshCalendario(r => r + 1)
+          }}
         />
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
       {turnoEditando && (
         <ModalTurno
           emprego={empregos.find(e => e.id === turnoEditando.emprego_id)}
@@ -188,6 +212,7 @@ useEffect(() => {
           }}
         />
       )}
+
       {selecionandoEmprego && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200 }}
           onClick={() => setSelecionandoEmprego(false)}>
@@ -206,6 +231,8 @@ useEffect(() => {
           </div>
         </div>
       )}
+
+      {toast && <div className={styles.toast}>{toast}</div>}
     </div>
   )
 }
