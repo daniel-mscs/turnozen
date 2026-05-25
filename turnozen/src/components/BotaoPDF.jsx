@@ -148,7 +148,7 @@ export default function BotaoPDF({ empregos, mes, ano, userId }) {
       { align: "center" },
     );
 
-    pdf.save(`escala-${MESES[mes].toLowerCase()}-${ano}.pdf`);
+    pdf.save(`escala-${String(mes + 1).padStart(2, "0")}-${ano}.pdf`);
     setLoading(false);
     setDica(true);
     setTimeout(() => setDica(false), 4000);

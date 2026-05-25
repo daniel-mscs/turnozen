@@ -1,14 +1,23 @@
+import { signInWithGoogle } from "../lib/supabase";
+import { useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import styles from "./Login.module.css";
 
 export default function Login() {
-  async function handleGoogleLogin() {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin,
-      },
+  useEffect(() => {
+    supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN") {
+        window.location.href = "/";
+      }
     });
+  }, []);
+
+  async function handleGoogleLogin() {
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      console.error("Erro no login:", err);
+    }
   }
 
   return (
