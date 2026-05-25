@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { App as CapApp } from "@capacitor/app";
+import { Browser } from "@capacitor/browser";
 import { supabase } from "./lib/supabase";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -17,6 +19,16 @@ export default function App() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+    });
+
+    CapApp.addListener("appUrlOpen", async ({ url }) => {
+      if (url.startsWith("turnozen://")) {
+        const code = new URL(url).searchParams.get("code");
+        if (code) {
+          await supabase.auth.exchangeCodeForSession(code);
+        }
+        await Browser.close();
+      }
     });
 
     return () => subscription.unsubscribe();
