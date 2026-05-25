@@ -6,6 +6,7 @@ import Calendario from '../components/Calendario'
 import Turnos from '../pages/Turnos'
 import BotaoPDF from '../components/BotaoPDF'
 import styles from './Home.module.css'
+import Ajuda from '../pages/Ajuda'
 
 export default function Home({ session }) {
   const [empregos, setEmpregos] = useState([])
@@ -20,6 +21,7 @@ export default function Home({ session }) {
   const [dataPreSelecionada, setDataPreSelecionada] = useState('')
   const [selecionandoEmprego, setSelecionandoEmprego] = useState(false)
   const [turnosPDF, setTurnosPDF] = useState([])
+  const [telaAjuda, setTelaAjuda] = useState(false)
 
   useEffect(() => {
     fetchEmpregos()
@@ -56,6 +58,8 @@ export default function Home({ session }) {
     setTimeout(() => setToast(''), 3000)
   }
 
+  if (telaAjuda) return <Ajuda onBack={() => setTelaAjuda(false)} />
+
   if (telaEmprego) return (
     <Turnos
       emprego={telaEmprego}
@@ -91,6 +95,9 @@ export default function Home({ session }) {
           </div>
         </div>
         <div className={styles.headerRight}>
+          <button className={styles.btnAjuda} onClick={() => setTelaAjuda(true)}>
+            <i className="ti ti-help-circle" />
+          </button>
           <img
             src={session.user.user_metadata.avatar_url}
             alt="avatar"

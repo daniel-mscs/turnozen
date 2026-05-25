@@ -260,3 +260,17 @@
 .sidebarHidden {
   display: none;
 }
+
+.btnAjuda {
+  background: transparent;
+  border: none;
+  color: #555;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: color 0.15s;
+}
+
+.btnAjuda:hover { color: #8B5CF6; }
