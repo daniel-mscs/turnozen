@@ -86,18 +86,19 @@
 }
 
 .btnAdd {
-  background: transparent;
-  border: 1px solid #2a2a2a;
-  color: #8B5CF6;
-  padding: 5px 12px;
-  border-radius: 6px;
+  background: #8B5CF6;
+  border: none;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 999px;
   font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
   font-family: inherit;
-  transition: border-color 0.15s, background 0.15s;
+  transition: opacity 0.15s;
 }
 
-.btnAdd:hover { border-color: #8B5CF6; background: rgba(139,92,246,0.08); }
+.btnAdd:hover { opacity: 0.85; }
 
 .empty {
   font-size: 13px;
@@ -156,19 +157,20 @@
 .empregoCard:hover .empregoActions { opacity: 1; }
 
 .btnTurno {
-  background: transparent;
-  border: 1px solid #2a2a2a;
+  background: rgba(139,92,246,0.1);
+  border: 1px solid rgba(139,92,246,0.2);
   color: #8B5CF6;
-  padding: 3px 10px;
-  border-radius: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
   font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;
-  transition: border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.btnTurno:hover { border-color: #8B5CF6; }
+.btnTurno:hover { background: rgba(139,92,246,0.2); border-color: #8B5CF6; }
 
 .btnDeletar {
   background: transparent;

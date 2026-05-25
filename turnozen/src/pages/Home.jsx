@@ -15,11 +15,19 @@ export default function Home({ session }) {
   const [toast, setToast] = useState('')
   const [sidebarAberta, setSidebarAberta] = useState(true)
   const [refreshCalendario, setRefreshCalendario] = useState(0)
+  const [turnoEditando, setTurnoEditando] = useState(null)
+  const [dataPreSelecionada, setDataPreSelecionada] = useState('')
+  const [selecionandoEmprego, setSelecionandoEmprego] = useState(false)
 
   useEffect(() => {
-    fetchEmpregos()
-  }, [])
+  fetchEmpregos()
+}, [])
 
+useEffect(() => {
+  if (!loading && empregos.length === 0) {
+    setModalAberto(true)
+  }
+}, [loading, empregos])
   async function fetchEmpregos() {
     const { data, error } = await supabase
       .from('empregos')
@@ -85,7 +93,7 @@ export default function Home({ session }) {
         <div className={`${styles.sidebar} ${!sidebarAberta ? styles.sidebarHidden : ''}`}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Empregos</h2>
-            <button className={styles.btnAdd} onClick={() => setModalAberto(true)}>+ novo</button>
+            <button className={styles.btnAdd} onClick={() => setModalAberto(true)}>Novo emprego</button>
           </div>
 
           {loading ? (
@@ -108,7 +116,7 @@ export default function Home({ session }) {
                       className={styles.btnTurno}
                       onClick={() => setEmpregoSelecionado(emp)}
                     >
-                      + turno
+                      Adicionar turno
                     </button>
                     <button
                       className={styles.btnDeletar}
@@ -128,8 +136,14 @@ export default function Home({ session }) {
           <Calendario
             empregos={empregos}
             userId={session.user.id}
-            onDiaClick={(data, turnos) => console.log(data, turnos)}
+            onDiaClick={(dataStr, turnosDia) => {
+              if (turnosDia.length === 0 && empregos.length > 0) {
+                setDataPreSelecionada(dataStr)
+                setSelecionandoEmprego(true)
+              }
+            }}
             refresh={refreshCalendario}
+            onEditarTurno={(turno) => setTurnoEditando(turno)}
           />
         </div>
 
@@ -147,12 +161,51 @@ export default function Home({ session }) {
         <ModalTurno
           emprego={empregoSelecionado}
           userId={session.user.id}
-          onClose={() => setEmpregoSelecionado(null)}
-          onSaved={() => { showToast('Turno salvo!'); fetchEmpregos(); setRefreshCalendario(r => r + 1) }}
+          dataInicial={dataPreSelecionada}
+          onClose={() => { setEmpregoSelecionado(null); setDataPreSelecionada('') }}
+          onSaved={(data) => {
+          const hoje = new Date().toISOString().split('T')[0]
+          if (data >= hoje) showToast('Turno salvo!')
+          fetchEmpregos()
+          setRefreshCalendario(r => r + 1)
+        }}
         />
       )}
 
       {toast && <div className={styles.toast}>{toast}</div>}
+      {turnoEditando && (
+        <ModalTurno
+          emprego={empregos.find(e => e.id === turnoEditando.emprego_id)}
+          userId={session.user.id}
+          turnoExistente={turnoEditando}
+          onClose={() => setTurnoEditando(null)}
+          onSaved={(data) => {
+            const hoje = new Date().toISOString().split('T')[0]
+            if (data >= hoje) showToast('Turno atualizado!')
+            setTurnoEditando(null)
+            fetchEmpregos()
+            setRefreshCalendario(r => r + 1)
+          }}
+        />
+      )}
+      {selecionandoEmprego && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200 }}
+          onClick={() => setSelecionandoEmprego(false)}>
+          <div style={{ background: '#111', border: '1px solid #2a2a2a', borderRadius: 16, padding: '24px', minWidth: 280, display: 'flex', flexDirection: 'column', gap: 12 }}
+            onClick={e => e.stopPropagation()}>
+            <p style={{ fontSize: 13, color: '#888', textTransform: 'uppercase', letterSpacing: 1 }}>Qual emprego?</p>
+            {empregos.map(emp => (
+              <button key={emp.id}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#161616', border: '1px solid #222', borderRadius: 10, padding: '12px 16px', cursor: 'pointer', color: '#fff', fontSize: 14, fontFamily: 'inherit' }}
+                onClick={() => { setEmpregoSelecionado(emp); setSelecionandoEmprego(false) }}
+              >
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: emp.cor }} />
+                {emp.nome}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

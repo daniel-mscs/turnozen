@@ -2,16 +2,17 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import styles from './ModalTurno.module.css'
 
-export default function ModalTurno({ emprego, userId, onClose, onSaved }) {
-  const [data, setData] = useState('')
-  const [horaInicio, setHoraInicio] = useState('')
-  const [horaFim, setHoraFim] = useState('')
+export default function ModalTurno({ emprego, userId, onClose, onSaved, turnoExistente, dataInicial }) {
+  const [data, setData] = useState(turnoExistente?.data || dataInicial || '')
+  const [horaInicio, setHoraInicio] = useState(turnoExistente?.hora_inicio?.slice(0,5) || '')
+  const [horaFim, setHoraFim] = useState(turnoExistente?.hora_fim?.slice(0,5) || '')
   const [loading, setLoading] = useState(false)
   const dataRef = useRef(null)
 
   // Preenche automaticamente com o último turno desse emprego
   useEffect(() => {
     async function fetchUltimo() {
+      if (turnoExistente) return // não sobrescreve se tiver editando
       const { data: ultimo } = await supabase
         .from('turnos')
         .select('hora_inicio, hora_fim')
@@ -29,22 +30,28 @@ export default function ModalTurno({ emprego, userId, onClose, onSaved }) {
     dataRef.current?.focus()
   }, [])
 
+  async function handleDeletar() {
+    if (!confirm('Deletar esse turno?')) return
+    await supabase.from('turnos').delete().eq('id', turnoExistente.id)
+    onSaved(data)
+    onClose()
+  }
+
   async function handleSalvar() {
     if (!data || !horaInicio || !horaFim) return
     setLoading(true)
 
-    const { error } = await supabase
-      .from('turnos')
-      .insert({
-        user_id: userId,
-        emprego_id: emprego.id,
-        data,
-        hora_inicio: horaInicio,
-        hora_fim: horaFim
-      })
+    const { error } = turnoExistente
+      ? await supabase
+          .from('turnos')
+          .update({ data, hora_inicio: horaInicio, hora_fim: horaFim })
+          .eq('id', turnoExistente.id)
+      : await supabase
+          .from('turnos')
+          .insert({ user_id: userId, emprego_id: emprego.id, data, hora_inicio: horaInicio, hora_fim: horaFim })
 
     if (!error) {
-      onSaved()
+      onSaved(data)
       onClose()
     }
     setLoading(false)
@@ -59,8 +66,11 @@ export default function ModalTurno({ emprego, userId, onClose, onSaved }) {
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()} onKeyDown={handleKeyDown}>
         <div className={styles.header}>
-          <div className={styles.cor} style={{ background: emprego.cor }} />
-          <span className={styles.title}>{emprego.nome}</span>
+          <div className={styles.headerLeft}>
+            <div className={styles.cor} style={{ background: emprego.cor }} />
+            <span className={styles.title}>{emprego.nome}</span>
+          </div>
+          <span className={styles.headerLabel}>{turnoExistente ? 'Editar turno' : 'Novo turno'}</span>
         </div>
 
         <div className={styles.fields}>
@@ -99,6 +109,11 @@ export default function ModalTurno({ emprego, userId, onClose, onSaved }) {
         </div>
 
         <div className={styles.actions}>
+          {turnoExistente && (
+            <button className={styles.btnDeletar} onClick={handleDeletar}>
+              <i className="ti ti-trash" />
+            </button>
+          )}
           <button className={styles.btnCancelar} onClick={onClose}>cancelar</button>
           <button
             className={styles.btnSalvar}
