@@ -56,29 +56,18 @@ export default function Calendario({
   const ultimoTurno = turnosDia[turnosDia.length - 1];
   const proximoTurno = turnosProximo[0];
 
-  const [h1, m1] = ultimoTurno.hora_fim.slice(0, 5).split(":").map(Number);
-  const [hi, mi] = ultimoTurno.hora_inicio.slice(0, 5).split(":").map(Number);
-  const [h2, m2] = proximoTurno.hora_inicio.slice(0, 5).split(":").map(Number);
+  const [hFim, mFim] = ultimoTurno.hora_fim.slice(0, 5).split(":").map(Number);
+  const [hIni, mIni] = ultimoTurno.hora_inicio.slice(0, 5).split(":").map(Number);
+  const [hProx, mProx] = proximoTurno.hora_inicio.slice(0, 5).split(":").map(Number);
 
-  const minsFimTurno = h1 * 60 + m1;
-  const minsInicioTurno = hi * 60 + mi;
-  const minsProximoInicio = h2 * 60 + m2;
+  const minsFim = hFim * 60 + mFim;
+  const minsIni = hIni * 60 + mIni;
+  const minsProx = hProx * 60 + mProx;
 
-  // turno cruzou meia-noite se fim < inicio
-  const turnoNoturno = minsFimTurno < minsInicioTurno;
+  const noturno = minsFim < minsIni;
 
-  // fim absoluto: se noturno, fim já é no dia seguinte
-  const fimAbsoluto = turnoNoturno
-    ? minsFimTurno + 24 * 60  // fim no dia seguinte
-    : minsFimTurno + 24 * 60; // fim no mesmo dia mas referenciado no dia seguinte
+  const diff = noturno ? minsProx - minsFim : minsProx + 24 * 60 - minsFim;
 
-  // próximo início: sempre no dia seguinte
-  const inicioAbsoluto = minsProximoInicio + 24 * 60;
-
-  // se noturno, o fim já tá no dia seguinte — não soma mais 24h
-  const fimReal = turnoNoturno ? minsFimTurno : minsFimTurno + 24 * 60;
-
-  const diff = inicioAbsoluto - fimReal;
   if (diff <= 0) return { horas: 0, mins: 0, critico: true };
 
   const horas = Math.floor(diff / 60);
