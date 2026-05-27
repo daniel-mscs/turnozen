@@ -76,12 +76,13 @@
 
 .diaVazio {
   aspect-ratio: 1;
-  min-height: 50px;
+  min-height: 80px;
 }
 
 /* ── DIA ── */
 .dia {
-  aspect-ratio: 1;
+  aspect-ratio: unset;
+  min-height: 55px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
