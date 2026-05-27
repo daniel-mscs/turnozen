@@ -135,7 +135,7 @@ export default function ModalOnboarding({ onClose }) {
                 fontWeight: 600,
               }}
             >
-              começar 🚀
+              começar !
             </button>
           )}
         </div>
