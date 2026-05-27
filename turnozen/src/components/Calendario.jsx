@@ -47,27 +47,40 @@ export default function Calendario({
       .sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
   }
 
-  function horasLivres(dia) {
-    const turnosDia = turnosDoDia(dia);
-    const turnosProximo = turnosDoDia(dia + 1);
+  function function horasLivres(dia) {
+  const turnosDia = turnosDoDia(dia);
+  const turnosProximo = turnosDoDia(dia + 1);
 
-    if (turnosDia.length === 0 || turnosProximo.length === 0) return null;
+  if (turnosDia.length === 0 || turnosProximo.length === 0) return null;
 
-    const ultimoFim = turnosDia[turnosDia.length - 1].hora_fim.slice(0, 5);
-    const proximoInicio = turnosProximo[0].hora_inicio.slice(0, 5);
+  const ultimoTurno = turnosDia[turnosDia.length - 1];
+  const proximoTurno = turnosProximo[0];
 
-    const [h1, m1] = ultimoFim.split(":").map(Number);
-    const [h2, m2] = proximoInicio.split(":").map(Number);
+  const ultimoFim = ultimoTurno.hora_fim.slice(0, 5);
+  const proximoInicio = proximoTurno.hora_inicio.slice(0, 5);
 
-    const minsFim = h1 * 60 + m1;
-    const minsInicio = h2 * 60 + m2 + 24 * 60;
+  const [h1, m1] = ultimoFim.split(":").map(Number);
+  const [h2, m2] = proximoInicio.split(":").map(Number);
 
-    const diff = minsInicio - minsFim;
-    const horas = Math.floor(diff / 60);
-    const mins = diff % 60;
+  const inicioTurno = ultimoTurno.hora_inicio.slice(0, 5);
+  const [hi, mi] = inicioTurno.split(":").map(Number);
+  const minsInicioTurno = hi * 60 + mi;
+  const minsUltimoFim = h1 * 60 + m1;
 
-    return { horas, mins, critico: diff < 11 * 60 };
-  }
+  const fimAbsoluto = minsUltimoFim < minsInicioTurno
+    ? minsUltimoFim + 24 * 60
+    : minsUltimoFim + 24 * 60; 
+    
+  const inicioAbsoluto = h2 * 60 + m2 + 24 * 60;
+
+  const diff = inicioAbsoluto - fimAbsoluto;
+  if (diff <= 0) return { horas: 0, mins: 0, critico: true };
+
+  const horas = Math.floor(diff / 60);
+  const mins = diff % 60;
+
+  return { horas, mins, critico: diff < 11 * 60 };
+}
 
   function calcDuracao(inicio, fim) {
     const [h1, m1] = inicio.split(":").map(Number);
