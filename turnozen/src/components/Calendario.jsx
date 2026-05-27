@@ -47,33 +47,47 @@ export default function Calendario({
       .sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
   }
 
-  function horasLivres(dia) {
+  function descansosDoDia(dia) {
   const turnosDia = turnosDoDia(dia);
   const turnosProximo = turnosDoDia(dia + 1);
 
-  if (turnosDia.length === 0 || turnosProximo.length === 0) return null;
+  function toMins(horaInicio, horaFim) {
+    const [hI, mI] = horaInicio.split(":").map(Number);
+    const [hF, mF] = horaFim.split(":").map(Number);
+    const ini = hI * 60 + mI;
+    const fim = hF * 60 + mF;
+    return { ini, fim: fim < ini ? fim + 24 * 60 : fim };
+  }
 
-  const ultimoTurno = turnosDia[turnosDia.length - 1];
-  const proximoTurno = turnosProximo[0];
+  const lista = [];
 
-  const [hFim, mFim] = ultimoTurno.hora_fim.slice(0, 5).split(":").map(Number);
-  const [hIni, mIni] = ultimoTurno.hora_inicio.slice(0, 5).split(":").map(Number);
-  const [hProx, mProx] = proximoTurno.hora_inicio.slice(0, 5).split(":").map(Number);
+  turnosDia.forEach((t) => {
+    const { ini, fim } = toMins(t.hora_inicio, t.hora_fim);
+    lista.push({ ini, fim });
+  });
 
-  const minsFim = hFim * 60 + mFim;
-  const minsIni = hIni * 60 + mIni;
-  const minsProx = hProx * 60 + mProx;
+  turnosProximo.forEach((t) => {
+    const { ini, fim } = toMins(t.hora_inicio, t.hora_fim);
+    lista.push({ ini: ini + 24 * 60, fim: fim + 24 * 60 });
+  });
 
-  const noturno = minsFim < minsIni;
+  if (lista.length < 2) return [];
 
-  const diff = noturno ? minsProx - minsFim : minsProx + 24 * 60 - minsFim;
+  lista.sort((a, b) => a.ini - b.ini);
 
-  if (diff <= 0) return { horas: 0, mins: 0, critico: true };
+  const descansos = [];
+  for (let i = 0; i < lista.length - 1; i++) {
+    const diff = lista[i + 1].ini - lista[i].fim;
+    if (diff >= 0) {
+      descansos.push({
+        horas: Math.floor(diff / 60),
+        mins: diff % 60,
+        critico: diff < 11 * 60,
+      });
+    }
+  }
 
-  const horas = Math.floor(diff / 60);
-  const mins = diff % 60;
-
-  return { horas, mins, critico: diff < 11 * 60 };
+  return descansos;
 }
 
   function calcDuracao(inicio, fim) {
@@ -155,7 +169,7 @@ export default function Calendario({
           const dataStr = `${mes.ano}-${String(mes.mes + 1).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
           const turnosDia = turnosDoDia(dia);
           const isHoje = dataStr === hojeStr;
-          const livre = horasLivres(dia);
+          const descansos = descansosDoDia(dia);
 
           return (
             <div
@@ -163,7 +177,7 @@ export default function Calendario({
               className={`${styles.dia} ${isHoje ? styles.hoje : ""} ${turnosDia.length > 0 ? styles.comTurno : ""}`}
               onClick={() => {
                 if (turnosDia.length > 0)
-                  setPopupDia({ dataStr, dia, turnosDia, livre });
+                   setPopupDia({ dataStr, dia, turnosDia, descansos });
                 onDiaClick(dataStr, turnosDia);
               }}
             >
@@ -177,14 +191,15 @@ export default function Calendario({
                   />
                 ))}
               </div>
-              {livre && (
+              {descansos.map((d, i) => (
                 <span
+                  key={i}
                   className={styles.livre}
-                  style={{ color: livre.critico ? "#e53935" : "#10B981" }}
+                  style={{ color: d.critico ? "#e53935" : "#10B981" }}
                 >
-                  {livre.horas}h
+                  {d.horas}h{d.mins > 0 ? `${d.mins}m` : ""}
                 </span>
-              )}
+              ))}
             </div>
           );
         })}
@@ -245,35 +260,26 @@ export default function Calendario({
               + adicionar turno
             </button>
 
-            {popupDia.livre && (
+            {popupDia.descansos?.map((d, i) => (
               <div
+                key={i}
                 className={styles.popupDescanso}
-                style={{
-                  borderColor: popupDia.livre.critico
-                    ? "#e5393522"
-                    : "#10B98122",
-                }}
+                style={{ borderColor: d.critico ? "#e5393522" : "#10B98122" }}
               >
                 <span
                   className={styles.popupDescansoLabel}
-                  style={{
-                    color: popupDia.livre.critico ? "#e53935" : "#10B981",
-                  }}
+                  style={{ color: d.critico ? "#e53935" : "#10B981" }}
                 >
-                  {popupDia.livre.critico ? "⚠ Descanso curto" : "✓ Descanso"}
+                  {d.critico ? "⚠ Descanso curto" : "✓ Descanso"}
                 </span>
                 <span
                   className={styles.popupDescansoHoras}
-                  style={{
-                    color: popupDia.livre.critico ? "#e53935" : "#10B981",
-                  }}
+                  style={{ color: d.critico ? "#e53935" : "#10B981" }}
                 >
-                  {popupDia.livre.horas}h
-                  {popupDia.livre.mins > 0 ? `${popupDia.livre.mins}m` : ""} até
-                  o próximo turno
+                  {d.horas}h{d.mins > 0 ? `${d.mins}m` : ""} até o próximo turno
                 </span>
               </div>
-            )}
+            ))}
           </div>
         </div>
       )}
