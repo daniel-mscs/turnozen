@@ -190,10 +190,11 @@ export default function Home({ session }) {
               empregos={empregos}
               userId={session.user.id}
               onDiaClick={(dataStr, turnosDia, empregoDirecto) => {
-                setDataPreSelecionada(dataStr);
                 if (empregoDirecto) {
+                  setDataPreSelecionada(dataStr);
                   setEmpregoSelecionado(empregoDirecto);
-                } else if (empregos.length > 0) {
+                } else if (turnosDia.length === 0 && empregos.length > 0) {
+                  setDataPreSelecionada(dataStr);
                   setSelecionandoEmprego(true);
                 }
               }}
