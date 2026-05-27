@@ -71,12 +71,12 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: 1fr;
   gap: 2px;
 }
 
 .diaVazio {
   aspect-ratio: 1;
+  min-height: 50px;
 }
 
 /* ── DIA ── */
