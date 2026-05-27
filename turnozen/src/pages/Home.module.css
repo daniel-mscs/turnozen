@@ -227,7 +227,8 @@
   .empregoActions { opacity: 1; }
 
 .calendarioWrap {
-  padding: 16px 0px;
+  padding: 16px 0;
+  overflow: hidden;
 }
 
   .header { padding: 12px 16px; }
