@@ -238,7 +238,13 @@ export default function Calendario({
             <button
               className={styles.popupAddBtn}
               onClick={() => {
-                onDiaClick(popupDia.dataStr, []);
+                const empregosNoDia = popupDia.turnosDia.map((t) => t.emprego_id);
+                const empregosSemTurno = empregos.filter((e) => !empregosNoDia.includes(e.id));
+                if (empregosSemTurno.length === 1) {
+                  onDiaClick(popupDia.dataStr, [], empregosSemTurno[0]);
+                } else {
+                  onDiaClick(popupDia.dataStr, []);
+                }
                 setPopupDia(null);
               }}
             >

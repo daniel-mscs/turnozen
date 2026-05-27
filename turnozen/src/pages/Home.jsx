@@ -189,9 +189,11 @@ export default function Home({ session }) {
             <Calendario
               empregos={empregos}
               userId={session.user.id}
-              onDiaClick={(dataStr, turnosDia) => {
-                if (turnosDia.length === 0 && empregos.length > 0) {
-                  setDataPreSelecionada(dataStr);
+              onDiaClick={(dataStr, turnosDia, empregoDirecto) => {
+                setDataPreSelecionada(dataStr);
+                if (empregoDirecto) {
+                  setEmpregoSelecionado(empregoDirecto);
+                } else if (empregos.length > 0) {
                   setSelecionandoEmprego(true);
                 }
               }}
