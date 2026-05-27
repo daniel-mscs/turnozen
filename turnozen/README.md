@@ -1,16 +1,74 @@
-# React + Vite
+# TurnoZen
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+App para organização de plantões em múltiplos empregos. Desenvolvido para técnicos de enfermagem e profissionais com escalas rotativas em mais de um local de trabalho.
 
-Currently, two official plugins are available:
+🔗 [turnozen.vercel.app](https://turnozen.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Funcionalidades
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Calendário mensal com visualização por emprego
+- Cálculo automático de horas de descanso entre turnos
+- Alerta quando o descanso está abaixo de 11h (norma CLT)
+- Exportação de PDF da escala mensal
+- Login com Google via OAuth
+- PWA instalável + APK Android via Capacitor
+- Suporte a turnos noturnos (ex: 19h → 07h)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Stack
+
+- **Frontend:** React + Vite
+- **Backend/DB:** Supabase (PostgreSQL + Auth + RLS)
+- **Mobile:** Capacitor (Android)
+- **Deploy:** Vercel
+
+---
+
+## Como rodar localmente
+
+```bash
+# Clone o repositório
+git clone https://github.com/daniel-mscs/turnozen.git
+cd turnozen/turnozen
+
+# Instale as dependências
+npm install
+
+# Configure as variáveis de ambiente
+cp .env.example .env
+# Preencha VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY
+
+# Rode em desenvolvimento
+npm run dev
+```
+
+---
+
+## Variáveis de ambiente
+
+```env
+VITE_SUPABASE_URL=sua_url_aqui
+VITE_SUPABASE_ANON_KEY=sua_chave_aqui
+```
+
+---
+
+## Build para Android
+
+```bash
+npm run build
+npx cap sync
+# Abrir Android Studio e gerar APK
+npx cap open android
+```
+
+---
+
+## Autor
+
+Daniel — Técnico de Enfermagem e estudante de Engenharia de Software (1º semestre)
+
+[GitHub](https://github.com/daniel-mscs) · [LinkedIn](https://linkedin.com/in/seu-perfil)
