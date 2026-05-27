@@ -7,6 +7,8 @@ import Turnos from "../pages/Turnos";
 import BotaoPDF from "../components/BotaoPDF";
 import styles from "./Home.module.css";
 import Ajuda from "../pages/Ajuda";
+import ModalOnboarding from "../components/ModalOnboarding";
+import { Preferences } from "@capacitor/preferences";
 
 export default function Home({ session }) {
   const [empregos, setEmpregos] = useState([]);
@@ -22,10 +24,17 @@ export default function Home({ session }) {
   const [selecionandoEmprego, setSelecionandoEmprego] = useState(false);
   const [turnosPDF, setTurnosPDF] = useState([]);
   const [telaAjuda, setTelaAjuda] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     fetchEmpregos();
+    verificarOnboarding();
   }, []);
+
+  async function verificarOnboarding() {
+    const { value } = await Preferences.get({ key: "onboarding_completo" });
+    if (!value) setShowOnboarding(true);
+  }
 
   useEffect(() => {
     if (!loading && empregos.length === 0) {
@@ -317,6 +326,10 @@ export default function Home({ session }) {
             ))}
           </div>
         </div>
+      )}
+
+      {showOnboarding && (
+        <ModalOnboarding onClose={() => setShowOnboarding(false)} />
       )}
 
       {toast && <div className={styles.toast}>{toast}</div>}
