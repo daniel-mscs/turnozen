@@ -47,7 +47,7 @@ export default function Calendario({
       .sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
   }
 
-  function function horasLivres(dia) {
+  function horasLivres(dia) {
   const turnosDia = turnosDoDia(dia);
   const turnosProximo = turnosDoDia(dia + 1);
 
@@ -70,7 +70,7 @@ export default function Calendario({
   const fimAbsoluto = minsUltimoFim < minsInicioTurno
     ? minsUltimoFim + 24 * 60
     : minsUltimoFim + 24 * 60; 
-    
+
   const inicioAbsoluto = h2 * 60 + m2 + 24 * 60;
 
   const diff = inicioAbsoluto - fimAbsoluto;
