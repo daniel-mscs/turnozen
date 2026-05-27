@@ -145,12 +145,17 @@ export default function Home({ session }) {
                     {emp.nome}
                   </span>
                   <div className={styles.empregoActions}>
-                    <button
-                      className={styles.btnTurno}
-                      onClick={() => setEmpregoSelecionado(emp)}
-                    >
-                      Adicionar turno
-                    </button>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      <button
+                        className={styles.btnTurno}
+                        onClick={() => setEmpregoSelecionado(emp)}
+                      >
+                        Adicionar turno
+                      </button>
+                      <span style={{ fontSize: 10, color: "#444", textAlign: "center" }}>
+                        ou clique em um dia 📅
+                      </span>
+                    </div>
                     <button
                       className={styles.btnDeletar}
                       onClick={() => handleDeletar(emp.id)}
