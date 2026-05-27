@@ -72,7 +72,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-auto-rows: 90px;
-  gap: 3px;
+  gap: 5px;
   padding-top: 75px;
 }
 
