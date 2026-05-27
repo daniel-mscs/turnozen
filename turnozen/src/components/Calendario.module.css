@@ -134,10 +134,10 @@
 .barras {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 3px;
   width: 85%;
-  flex: 1;
-  padding: 6px 0;
+  padding: 3px 0;
 }
 
 .barra {
