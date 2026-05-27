@@ -47,58 +47,34 @@ export default function Calendario({
       .sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
   }
 
-  function descansosDoDia(dia) {
-    const turnosDia = turnosDoDia(dia);
-    const turnosProximo = turnosDoDia(dia + 1);
+  function horasLivres(dia) {
+  const turnosDia = turnosDoDia(dia);
+  const turnosProximo = turnosDoDia(dia + 1);
 
-    function toMins(horaInicio, horaFim) {
-      const [hI, mI] = horaInicio.split(":").map(Number);
-      const [hF, mF] = horaFim.split(":").map(Number);
-      const ini = hI * 60 + mI;
-      const fim = hF * 60 + mF;
-      return { ini, fim: fim < ini ? fim + 24 * 60 : fim };
-    }
+  if (turnosDia.length === 0 || turnosProximo.length === 0) return null;
 
-    const lista = [];
+  const ultimoTurno = turnosDia[turnosDia.length - 1];
+  const proximoTurno = turnosProximo[0];
 
-    turnosDia.forEach((t) => {
-      const { ini, fim } = toMins(t.hora_inicio, t.hora_fim);
-      lista.push({ ini, fim });
-    });
+  const [hFim, mFim] = ultimoTurno.hora_fim.slice(0, 5).split(":").map(Number);
+  const [hIni, mIni] = ultimoTurno.hora_inicio.slice(0, 5).split(":").map(Number);
+  const [hProx, mProx] = proximoTurno.hora_inicio.slice(0, 5).split(":").map(Number);
 
-    turnosProximo.forEach((t) => {
-      const { ini, fim } = toMins(t.hora_inicio, t.hora_fim);
-      lista.push({ ini: ini + 24 * 60, fim: fim + 24 * 60 });
-    });
+  const minsFim = hFim * 60 + mFim;
+  const minsIni = hIni * 60 + mIni;
+  const minsProx = hProx * 60 + mProx;
 
-    if (lista.length < 2) return [];
+  const noturno = minsFim < minsIni;
 
-    lista.sort((a, b) => a.ini - b.ini);
+  const diff = noturno ? minsProx - minsFim : minsProx + 24 * 60 - minsFim;
 
-    const descansos = [];
-    for (let i = 0; i < lista.length - 1; i++) {
-      const diff = lista[i + 1].ini - lista[i].fim;
-      if (diff >= 0) {
-        descansos.push({
-          horas: Math.floor(diff / 60),
-          mins: diff % 60,
-          critico: diff < 11 * 60,
-        });
-      }
-    }
+  if (diff <= 0) return { horas: 0, mins: 0, critico: true };
 
-    return descansos;
-  }
+  const horas = Math.floor(diff / 60);
+  const mins = diff % 60;
 
-  function menorDescanso(dia) {
-    const descansos = descansosDoDia(dia);
-    if (descansos.length === 0) return null;
-    return descansos.reduce((menor, d) => {
-      const minsD = d.horas * 60 + d.mins;
-      const minsMenor = menor.horas * 60 + menor.mins;
-      return minsD < minsMenor ? d : menor;
-    });
-  }
+  return { horas, mins, critico: diff < 11 * 60 };
+}
 
   function calcDuracao(inicio, fim) {
     const [h1, m1] = inicio.split(":").map(Number);
@@ -128,8 +104,18 @@ export default function Calendario({
   }
 
   const MESES = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
   const DIAS_SEMANA = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -140,14 +126,22 @@ export default function Calendario({
   return (
     <div className={styles.container}>
       <div className={styles.navMes}>
-        <button className={styles.btnNav} onClick={mesAnterior}>‹</button>
-        <span className={styles.titulo}>{MESES[mes.mes]} {mes.ano}</span>
-        <button className={styles.btnNav} onClick={mesSeguinte}>›</button>
+        <button className={styles.btnNav} onClick={mesAnterior}>
+          ‹
+        </button>
+        <span className={styles.titulo}>
+          {MESES[mes.mes]} {mes.ano}
+        </span>
+        <button className={styles.btnNav} onClick={mesSeguinte}>
+          ›
+        </button>
       </div>
 
       <div className={styles.semana}>
         {DIAS_SEMANA.map((d) => (
-          <div key={d} className={styles.diaSemana}>{d}</div>
+          <div key={d} className={styles.diaSemana}>
+            {d}
+          </div>
         ))}
       </div>
 
@@ -161,8 +155,7 @@ export default function Calendario({
           const dataStr = `${mes.ano}-${String(mes.mes + 1).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
           const turnosDia = turnosDoDia(dia);
           const isHoje = dataStr === hojeStr;
-          const descansos = descansosDoDia(dia);
-          const livre = menorDescanso(dia);
+          const livre = horasLivres(dia);
 
           return (
             <div
@@ -170,7 +163,7 @@ export default function Calendario({
               className={`${styles.dia} ${isHoje ? styles.hoje : ""} ${turnosDia.length > 0 ? styles.comTurno : ""}`}
               onClick={() => {
                 if (turnosDia.length > 0)
-                  setPopupDia({ dataStr, dia, turnosDia, descansos });
+                  setPopupDia({ dataStr, dia, turnosDia, livre });
                 onDiaClick(dataStr, turnosDia);
               }}
             >
@@ -189,7 +182,7 @@ export default function Calendario({
                   className={styles.livre}
                   style={{ color: livre.critico ? "#e53935" : "#10B981" }}
                 >
-                  {livre.horas}h{livre.mins > 0 ? `${livre.mins}m` : ""}
+                  {livre.horas}h
                 </span>
               )}
             </div>
@@ -197,18 +190,29 @@ export default function Calendario({
         })}
       </div>
 
+      {/* ── POPUP ── */}
       {popupDia && (
         <div className={styles.popupOverlay} onClick={() => setPopupDia(null)}>
           <div className={styles.popup} onClick={(e) => e.stopPropagation()}>
             <div className={styles.popupHeader}>
-              <span className={styles.popupData}>{formatData(popupDia.dataStr)}</span>
-              <button className={styles.popupClose} onClick={() => setPopupDia(null)}>✕</button>
+              <span className={styles.popupData}>
+                {formatData(popupDia.dataStr)}
+              </span>
+              <button
+                className={styles.popupClose}
+                onClick={() => setPopupDia(null)}
+              >
+                ✕
+              </button>
             </div>
 
             <div className={styles.popupTurnos}>
               {popupDia.turnosDia.map((t) => (
                 <div key={t.id} className={styles.popupTurno}>
-                  <div className={styles.popupCor} style={{ background: t.empregos?.cor }} />
+                  <div
+                    className={styles.popupCor}
+                    style={{ background: t.empregos?.cor }}
+                  />
                   <div className={styles.popupInfo}>
                     <span className={styles.popupNome}>{t.empregos?.nome}</span>
                     <span className={styles.popupHora}>
@@ -241,26 +245,35 @@ export default function Calendario({
               + adicionar turno
             </button>
 
-            {popupDia.descansos?.map((d, i) => (
+            {popupDia.livre && (
               <div
-                key={i}
                 className={styles.popupDescanso}
-                style={{ borderColor: d.critico ? "#e5393522" : "#10B98122" }}
+                style={{
+                  borderColor: popupDia.livre.critico
+                    ? "#e5393522"
+                    : "#10B98122",
+                }}
               >
                 <span
                   className={styles.popupDescansoLabel}
-                  style={{ color: d.critico ? "#e53935" : "#10B981" }}
+                  style={{
+                    color: popupDia.livre.critico ? "#e53935" : "#10B981",
+                  }}
                 >
-                  {d.critico ? "⚠ Descanso curto" : "✓ Descanso"}
+                  {popupDia.livre.critico ? "⚠ Descanso curto" : "✓ Descanso"}
                 </span>
                 <span
                   className={styles.popupDescansoHoras}
-                  style={{ color: d.critico ? "#e53935" : "#10B981" }}
+                  style={{
+                    color: popupDia.livre.critico ? "#e53935" : "#10B981",
+                  }}
                 >
-                  {d.horas}h{d.mins > 0 ? `${d.mins}m` : ""} até o próximo turno
+                  {popupDia.livre.horas}h
+                  {popupDia.livre.mins > 0 ? `${popupDia.livre.mins}m` : ""} até
+                  o próximo turno
                 </span>
               </div>
-            ))}
+            )}
           </div>
         </div>
       )}
