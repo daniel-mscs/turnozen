@@ -48,10 +48,11 @@ export default function Home({ session }) {
   }
 
   async function handleDeletar(id) {
-    if (!confirm("Deletar esse emprego?")) return;
-    await supabase.from("empregos").delete().eq("id", id);
-    fetchEmpregos();
-  }
+  if (!confirm("Deletar esse emprego?")) return;
+  await supabase.from("empregos").delete().eq("id", id);
+  fetchEmpregos();
+  setRefreshCalendario((r) => r + 1);
+}
 
   function showToast(msg) {
     setToast(msg);
