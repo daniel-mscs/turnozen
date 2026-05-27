@@ -84,11 +84,11 @@
 }
 
 .dia {
-  height: 200px;
+  height: 90px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 4px;
+  padding: 15px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
